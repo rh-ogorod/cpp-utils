@@ -1,0 +1,9 @@
+# Hey Emacs, this is -*- coding: utf-8; mode: bazel -*-
+
+workspace(name = "cpp-utils")
+
+new_local_repository(
+  name = "system",
+  path = "/usr/lib/x86_64-linux-gnu",
+  build_file = "system.BUILD.bazel",
+)

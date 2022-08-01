@@ -1,0 +1,10 @@
+cc_library(
+  name = "system",
+  srcs = [
+    "librt.so",
+    "libpthread.so",
+    # "libdl.so",
+    # "libcrypt.so"
+  ],
+  visibility = ["//visibility:public"],
+)

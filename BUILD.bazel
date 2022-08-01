@@ -1,0 +1,14 @@
+# Hey Emacs, this is -*- coding: utf-8; mode: bazel -*-
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+
+cc_library(
+  name = "cpp-utils",
+  hdrs = [
+    "src/functional.hpp",
+    "src/allocator.hpp",
+  ],
+  strip_include_prefix = "src/",
+  include_prefix = "cpp-utils/",
+  visibility = ["//visibility:public"],
+)
