@@ -29,16 +29,16 @@ static constexpr bool is_invocable_v = is_invocable<F, M>::value;
 namespace impl {
 
 template <class S>
-class FunPackInterface;
+class FunctorPackInterface;
 
 template <typename R, typename... Args>
-class FunPackInterface<R(Args...) noexcept> {
+class FunctorPackInterface<R(Args...) noexcept> {
  public:
   virtual auto operator()(Args... args) -> R = 0;
 };
 
 template <typename R, typename... Args>
-class FunPackInterface<R(Args...)> {
+class FunctorPackInterface<R(Args...)> {
  public:
   virtual auto operator()(Args... args) -> R = 0;
 };
@@ -84,7 +84,7 @@ class FunctorPack;
 template <typename F, typename R, typename... Args>
 class FunctorPack<F, R (F::*)(Args...)>
     : public FunctorPackBase<F, R (F::*)(Args...)>,
-      public FunPackInterface<R(Args...)> {
+      public FunctorPackInterface<R(Args...)> {
  private:
   using Base = FunctorPackBase<F, R (F::*)(Args...)>;
   using typename Base::Functor;
@@ -107,7 +107,7 @@ class FunctorPack<F, R (F::*)(Args...)>
 template <typename F, typename R, typename... Args>
 class FunctorPack<F, R (F::*)(Args...) const>
     : public FunctorPackBase<F, R (F::*)(Args...) const>,
-      public FunPackInterface<R(Args...)> {
+      public FunctorPackInterface<R(Args...)> {
  private:
   using Base = FunctorPackBase<F, R (F::*)(Args...) const>;
   using typename Base::Functor;
@@ -130,7 +130,7 @@ class FunctorPack<F, R (F::*)(Args...) const>
 template <typename F, typename R, typename... Args>
 class FunctorPack<F, R (F::*)(Args...) noexcept>
     : public FunctorPackBase<F, R (F::*)(Args...) noexcept>,
-      public FunPackInterface<R(Args...) noexcept> {
+      public FunctorPackInterface<R(Args...) noexcept> {
  private:
   using Base = FunctorPackBase<F, R (F::*)(Args...) noexcept>;
   using typename Base::Functor;
@@ -153,7 +153,7 @@ class FunctorPack<F, R (F::*)(Args...) noexcept>
 template <typename F, typename R, typename... Args>
 class FunctorPack<F, R (F::*)(Args...) const noexcept>
     : public FunctorPackBase<F, R (F::*)(Args...) const noexcept>,
-      public FunPackInterface<R(Args...) noexcept> {
+      public FunctorPackInterface<R(Args...) noexcept> {
  private:
   using Base = FunctorPackBase<F, R (F::*)(Args...) const noexcept>;
   using typename Base::Functor;
@@ -283,8 +283,8 @@ class Function<R(Args...) noexcept> {
   }
 
  private:
-  using FunPackInterface = impl::FunPackInterface<R(Args...) noexcept>;
-  std::shared_ptr<FunPackInterface> m_funPackInterfaceSPtr;
+  using FunctorPackInterface = impl::FunctorPackInterface<R(Args...) noexcept>;
+  std::shared_ptr<FunctorPackInterface> m_funPackInterfaceSPtr;
 };
 
 template <typename R, typename... Args>
@@ -395,8 +395,8 @@ class Function<R(Args...)> {
   }
 
  private:
-  using FunPackInterface = impl::FunPackInterface<R(Args...)>;
-  std::shared_ptr<FunPackInterface> m_funPackInterfaceSPtr;
+  using FunctorPackInterface = impl::FunctorPackInterface<R(Args...)>;
+  std::shared_ptr<FunctorPackInterface> m_funPackInterfaceSPtr;
 };
 
 }  // namespace rh_ogorod::cpp_utils
