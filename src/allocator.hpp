@@ -42,10 +42,10 @@ template <typename T, typename Construct, typename Destroy>
 requires std::invocable<Construct, T*> && std::invocable<Destroy, T*> &&
   std::movable<Construct> && std::movable<Destroy>
 auto allocateShared(Construct&& construct, Destroy&& destroy) noexcept {
-  return std::allocate_shared<T>(
-    // NOLINTNEXTLINE(bugprone-move-forwarding-reference)
-    Allocator<T, Construct, Destroy>(std::move(construct), std::move(destroy))
-  );
+  return std::allocate_shared<T>(Allocator<T, Construct, Destroy>(
+    std::forward<Construct>(construct),
+    std::forward<Destroy>(destroy)
+  ));
 }
 
 }  // namespace rh_ogorod::cpp_utils
