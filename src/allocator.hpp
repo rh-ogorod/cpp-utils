@@ -2,6 +2,7 @@
 #ifndef __rh_ogorod_cpp_utils_allocator_hpp__
 #define __rh_ogorod_cpp_utils_allocator_hpp__
 
+#include <concepts>
 #include <memory>
 
 namespace rh_ogorod::cpp_utils {
@@ -43,8 +44,11 @@ class Allocator : public std::allocator<T> {
 };
 
 template <typename T, typename Construct, typename Destroy>
-auto allocateShared(Construct&& construct, Destroy&& destroy) {
+requires std::invocable<Construct, T*> && std::invocable<Destroy, T*> &&
+  std::movable<Construct> && std::movable<Destroy>
+auto allocateShared(Construct&& construct, Destroy&& destroy) noexcept {
   return std::allocate_shared<T>(
+    // NOLINTNEXTLINE(bugprone-move-forwarding-reference)
     Allocator<T, Construct, Destroy>(std::move(construct), std::move(destroy))
   );
 }
