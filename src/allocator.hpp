@@ -2,29 +2,26 @@
 #ifndef __rh_ogorod_cpp_utils_allocator_hpp__
 #define __rh_ogorod_cpp_utils_allocator_hpp__
 
-#include "functional.hpp"
+#include <memory>
 
 namespace rh_ogorod::cpp_utils {
 
-template <typename T>
+template <typename T, typename C, typename D>
 class Allocator : public std::allocator<T> {
  public:
   using value_type = T;
   using pointer = value_type*;
 
-  // using Construct = std::function<void(pointer ptr)>;
-  // using Destroy = std::function<void(pointer ptr)>;
-  using Construct = Function<void(pointer ptr)>;
-  using Destroy = Function<void(pointer ptr) noexcept>;
+  using Construct = C;
+  using Destroy = D;
 
-  // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
   Allocator(Construct&& construct, Destroy&& destroy) noexcept
       : std::allocator<T>(),
         m_construct{std::move(construct)},
         m_destroy{std::move(destroy)} {};
 
-  template <class U>
-  explicit Allocator(const Allocator<U>& other) noexcept
+  template <typename UT, typename UC, typename UD>
+  explicit Allocator(const Allocator<UT, UC, UD>& other) noexcept
       : std::allocator<T>(other) {}
 
   void construct(pointer ptr) {
@@ -39,6 +36,13 @@ class Allocator : public std::allocator<T> {
   Construct m_construct;
   Destroy m_destroy;
 };
+
+template <typename T, typename Construct, typename Destroy>
+auto allocateShared(Construct&& construct, Destroy&& destroy) {
+  return std::allocate_shared<T>(
+    Allocator<T, Construct, Destroy>(std::move(construct), std::move(destroy))
+  );
+}
 
 }  // namespace rh_ogorod::cpp_utils
 
