@@ -7,11 +7,6 @@
 
 namespace rh_ogorod::cpp_utils {
 
-// Concepts:
-// https://en.cppreference.com/w/cpp/concepts/invocable
-// https://en.cppreference.com/w/cpp/concepts/movable
-// https://en.cppreference.com/w/cpp/concepts/copyable
-
 template <typename T, typename C, typename D>
 class Allocator : public std::allocator<T> {
  public:
