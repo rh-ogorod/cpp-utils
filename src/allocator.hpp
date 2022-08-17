@@ -4,6 +4,7 @@
 
 #include <concepts>
 #include <memory>
+#include <type_traits>
 
 namespace rh_ogorod::cpp_utils {
 
@@ -17,19 +18,21 @@ class Allocator : public std::allocator<T> {
   using Destroy = D;
 
   Allocator(Construct&& construct, Destroy&& destroy) noexcept
-      : std::allocator<T>(),
+      : std::allocator<T>{},
         m_construct{std::move(construct)},
         m_destroy{std::move(destroy)} {};
 
   template <typename UT, typename UC, typename UD>
   explicit Allocator(const Allocator<UT, UC, UD>& other) noexcept
-      : std::allocator<T>(other) {}
+      : std::allocator<T>{other} {}
 
-  void construct(pointer ptr) {
+  void construct(pointer ptr
+  ) noexcept(std::is_nothrow_invocable_v<decltype(m_construct), pointer>) {
     m_construct(ptr);
   }
 
-  void destroy(pointer ptr) {
+  void destroy(pointer ptr
+  ) noexcept(std::is_nothrow_invocable_v<decltype(m_destroy), pointer>) {
     m_destroy(ptr);
   }
 
