@@ -8,6 +8,7 @@ namespace rh_ogorod::cpp_utils {
 
 template <typename F>
 requires std::invocable<F>
+// NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)
 struct ScopeExit {
   using Finally = F;
 
