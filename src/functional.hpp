@@ -11,8 +11,8 @@ struct is_invocable {
  private:
   template <typename C>
   static constexpr auto check(bool) -> std::enable_if_t<
-    static_cast<Signature>(&C::operator()) != nullptr,
-    std::true_type>;
+      static_cast<Signature>(&C::operator()) != nullptr,
+      std::true_type>;
 
   template <typename C>
   static constexpr auto check(...) -> std::false_type;
@@ -66,10 +66,12 @@ class FunctorPackBase {
 
  private:
   FunctorPackBase(Method method, const Functor& object)
-      : m_method{method}, m_functor{object} {}
+      : m_method{method},
+        m_functor{object} {}
 
   FunctorPackBase(Method method, Functor&& object)
-      : m_method{method}, m_functor{std::move(object)} {}
+      : m_method{method},
+        m_functor{std::move(object)} {}
 
   Method m_method;
   Functor m_functor;
@@ -192,60 +194,60 @@ class Function<R(Args...) noexcept> {
       : m_funPackInterfaceSPtr{std::move(other.m_funPackInterfaceSPtr)} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodVX = R (FunctorT::*)(Args...) noexcept,
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodVX>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodVX = R (FunctorT::*)(Args...) noexcept,
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodVX>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(const Functor& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodVX>>(functor)} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodVX>>(functor)} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodVX = R (FunctorT::*)(Args...) noexcept,
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodVX>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodVX = R (FunctorT::*)(Args...) noexcept,
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodVX>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(Functor&& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodVX>>(
-            std::forward<Functor>(functor)
-          )} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodVX>>(
+                std::forward<Functor>(functor)
+            )} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodVX = R (FunctorT::*)(Args...) noexcept,
-    typename MethodCX = R (FunctorT::*)(Args...) const noexcept,
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodVX>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodCX>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodVX = R (FunctorT::*)(Args...) noexcept,
+      typename MethodCX = R (FunctorT::*)(Args...) const noexcept,
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodVX>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodCX>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(const Functor& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodCX>>(functor)} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodCX>>(functor)} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodVX = R (FunctorT::*)(Args...) noexcept,
-    typename MethodCX = R (FunctorT::*)(Args...) const noexcept,
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodVX>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodCX>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodVX = R (FunctorT::*)(Args...) noexcept,
+      typename MethodCX = R (FunctorT::*)(Args...) const noexcept,
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodVX>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodCX>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(Functor&& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodCX>>(
-            std::forward<Functor>(functor)
-          )} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodCX>>(
+                std::forward<Functor>(functor)
+            )} {}
 
   auto operator=(std::nullptr_t) -> Function& {
     m_funPackInterfaceSPtr.reset();
@@ -304,60 +306,60 @@ class Function<R(Args...)> {
       : m_funPackInterfaceSPtr{std::move(other.m_funPackInterfaceSPtr)} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodV = R (FunctorT::*)(Args...),
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodV>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodV = R (FunctorT::*)(Args...),
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodV>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(const Functor& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodV>>(functor)} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodV>>(functor)} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodV = R (FunctorT::*)(Args...),
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodV>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodV = R (FunctorT::*)(Args...),
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodV>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(Functor&& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodV>>(
-            std::forward<Functor>(functor)
-          )} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodV>>(
+                std::forward<Functor>(functor)
+            )} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodV = R (FunctorT::*)(Args...),
-    typename MethodC = R (FunctorT::*)(Args...) const,
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodV>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodC>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodV = R (FunctorT::*)(Args...),
+      typename MethodC = R (FunctorT::*)(Args...) const,
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodV>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodC>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(const Functor& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodC>>(functor)} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodC>>(functor)} {}
 
   template <
-    typename Functor,
-    typename FunctorT = std::remove_cvref_t<Functor>,
-    typename MethodV = R (FunctorT::*)(Args...),
-    typename MethodC = R (FunctorT::*)(Args...) const,
-    typename = std::enable_if_t<std::is_class_v<FunctorT>>,
-    typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
-    typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodV>>,
-    typename = std::enable_if_t<is_invocable_v<FunctorT, MethodC>>>
+      typename Functor,
+      typename FunctorT = std::remove_cvref_t<Functor>,
+      typename MethodV = R (FunctorT::*)(Args...),
+      typename MethodC = R (FunctorT::*)(Args...) const,
+      typename = std::enable_if_t<std::is_class_v<FunctorT>>,
+      typename = std::enable_if_t<!std::is_same_v<Function, FunctorT>>,
+      typename = std::enable_if_t<!is_invocable_v<FunctorT, MethodV>>,
+      typename = std::enable_if_t<is_invocable_v<FunctorT, MethodC>>>
   // NOLINTNEXTLINE(google-explicit-constructor)
   Function(Functor&& functor)
       : m_funPackInterfaceSPtr{
-          std::make_shared<impl::FunctorPack<FunctorT, MethodC>>(
-            std::forward<Functor>(functor)
-          )} {}
+            std::make_shared<impl::FunctorPack<FunctorT, MethodC>>(
+                std::forward<Functor>(functor)
+            )} {}
 
   auto operator=(std::nullptr_t) -> Function& {
     m_funPackInterfaceSPtr.reset();

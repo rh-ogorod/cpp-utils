@@ -43,11 +43,11 @@ class Allocator : public std::allocator<T> {
 
 template <typename T, typename Construct, typename Destroy>
 requires std::invocable<Construct, T*> && std::invocable<Destroy, T*> &&
-  std::movable<Construct> && std::movable<Destroy>
+    std::movable<Construct> && std::movable<Destroy>
 auto allocateShared(Construct&& construct, Destroy&& destroy) noexcept {
   return std::allocate_shared<T>(Allocator<T, Construct, Destroy>(
-    std::forward<Construct>(construct),
-    std::forward<Destroy>(destroy)
+      std::forward<Construct>(construct),
+      std::forward<Destroy>(destroy)
   ));
 }
 
