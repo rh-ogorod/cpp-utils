@@ -4,10 +4,7 @@ load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
   name = "cpp-utils",
-  hdrs = [
-    "src/functional.hpp",
-    "src/allocator.hpp",
-  ],
+  hdrs = glob(["src/**/*.hpp"]),
   strip_include_prefix = "src/",
   include_prefix = "cpp-utils/",
   visibility = ["//visibility:public"],
