@@ -8,8 +8,15 @@
 
 template <typename T>
 class BinaryForm {
+ private:
+  using Bitset = std::bitset<sizeof(T) * CHAR_BIT>;
+
  public:
   explicit BinaryForm(const T& v) : _bs(v) {}
+
+  auto bitset() -> Bitset& {
+    return _bs;
+  }
 
  private:
   const std::bitset<sizeof(T) * CHAR_BIT> _bs;
